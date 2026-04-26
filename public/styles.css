@@ -1,0 +1,154 @@
+/* =========================
+   PROFESSIONAL THEME UI
+   Beige + Olive Green
+========================= */
+
+:root {
+  --bg: #f6f1e7;          /* beige background */
+  --card: #ffffff;
+  --primary: #556b2f;     /* olive green */
+  --primary-dark: #3f4f22;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+}
+
+body {
+  font-family: "Segoe UI", sans-serif;
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* ================= SIDEBAR ================= */
+
+.sidebar {
+  width: 220px;
+  height: 100vh;
+  background: var(--primary);
+  color: white;
+  position: fixed;
+  padding: 20px;
+  box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+}
+
+.sidebar h2, .sidebar h3 {
+  text-align: center;
+  margin-bottom: 20px;
+  letter-spacing: 1px;
+}
+
+.sidebar button {
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
+  background: rgba(255,255,255,0.1);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.sidebar button:hover {
+  background: rgba(255,255,255,0.25);
+  transform: translateX(3px);
+}
+
+/* ================= MAIN ================= */
+
+.main {
+  margin-left: 240px;
+  padding: 25px;
+}
+
+/* ================= CARDS ================= */
+
+.card {
+  background: var(--card);
+  padding: 18px;
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  border: 1px solid var(--border);
+  transition: 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+
+/* ================= INPUTS ================= */
+
+input {
+  padding: 10px;
+  margin: 6px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  outline: none;
+  transition: 0.2s;
+}
+
+input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(85,107,47,0.2);
+}
+
+/* ================= BUTTONS ================= */
+
+button {
+  padding: 10px 14px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: var(--primary-dark);
+  transform: scale(1.03);
+}
+
+/* ================= TABLE ================= */
+
+table {
+  width: 100%;
+  background: white;
+  border-collapse: collapse;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.05);
+}
+
+th {
+  background: var(--primary);
+  color: white;
+  text-align: left;
+  padding: 12px;
+  font-weight: 600;
+}
+
+td {
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+tr:hover {
+  background: #f9f6ef;
+}
+
+/* ================= SEARCH ================= */
+
+.search {
+  width: 320px;
+  padding: 10px;
+  margin-bottom: 12px;
+  border-radius: 10px;
+}
+
+/* ================= UTIL ================= */
+
+h1, h2, h3, h5 {
+  color: var(--primary-dark);
+}
