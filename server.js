@@ -10,7 +10,13 @@ const PORT = process.env.PORT || 5000;
 const app = express();
 
 // ---------------- SECURITY + LIMITS ----------------
-app.use(cors());
+app.use(cors({
+  origin:["http://localhost:5173",
+    "https://stock-system-react.vercel.app"
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
 app.use(express.json({ limit: "10kb" }));
 app.use(express.static("public"));
 

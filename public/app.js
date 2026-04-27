@@ -1,4 +1,4 @@
-const API = "http://localhost:5000";
+const API = "https://stock-system-y59l.onrender.com";
 
 let chartInstance = null;
 
