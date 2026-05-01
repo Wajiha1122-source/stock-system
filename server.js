@@ -283,10 +283,16 @@ app.delete("/products/:id", async (req, res) => {
 });
 
 // =====================================================
-// REPORT (PDF - NOT CHANGED)
+// REPORT (PDF - FIXED)
 // =====================================================
 app.get("/report", (req, res) => {
-  pgPool.query("SELECT * FROM products ORDER BY category")
+  // ✅ FIX 1: SORT PROPERLY (category + numeric code)
+  pgPool.query(`
+    SELECT * FROM products 
+    ORDER BY category ASC, 
+    CASE WHEN code ~ '^[0-9]+$' THEN CAST(code AS INTEGER) END ASC,
+    code ASC
+  `)
     .then(result => {
       const rows = result.rows;
 
@@ -306,10 +312,10 @@ app.get("/report", (req, res) => {
       const col = {
         code: 50,
         name: 130,
-        category: 270,
-        unit: 360,
-        qty: 420,
-        price: 480
+        category: 300,   // ✅ moved right to avoid overlap
+        unit: 390,
+        qty: 450,
+        price: 500
       };
 
       const drawHeader = () => {
@@ -353,20 +359,23 @@ app.get("/report", (req, res) => {
 
         const validQty = qty > 0 ? qty : 0;
 
-       categoryTotal += validQty;
-grandTotal += validQty;
+        categoryTotal += validQty;
+        grandTotal += validQty;
 
         const y = doc.y;
 
         doc.font("Helvetica").fontSize(10);
-        doc.text(p.code || "-", col.code, y);
-        doc.text(p.name || "-", col.name, y);
-        doc.text(p.category || "-", col.category, y);
-        doc.text(p.unit || "-", col.unit, y);
-        doc.text(String(qty), col.qty, y);
-        doc.text(String(p.price || 0), col.price, y);
 
-        doc.moveDown(0.9);
+        // ✅ FIX 2: ADD WIDTH TO PREVENT OVERLAP
+        doc.text(p.code || "-", col.code, y, { width: 70 });
+        doc.text(p.name || "-", col.name, y, { width: 150, ellipsis: true });
+        doc.text(p.category || "-", col.category, y, { width: 90 });
+        doc.text(p.unit || "-", col.unit, y, { width: 50 });
+        doc.text(String(qty), col.qty, y, { width: 40 });
+        doc.text(String(p.price || 0), col.price, y, { width: 50 });
+
+        // ✅ FIX 3: BETTER ROW SPACING
+        doc.moveDown(1);
       });
 
       doc.moveDown(1);
