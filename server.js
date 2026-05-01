@@ -158,7 +158,17 @@ app.post("/login", async (req, res) => {
 // =====================================================
 app.get("/products", async (req, res) => {
   try {
-    const result = await query("SELECT * FROM products ORDER BY category");
+    const result = await query(`
+      SELECT * FROM products 
+      ORDER BY 
+        category ASC,
+        CASE 
+          WHEN code ~ '^[0-9]+$' THEN CAST(code AS INTEGER)
+          ELSE NULL
+        END ASC,
+        code ASC
+    `);
+
     res.json(result.rows || []);
   } catch (err) {
     return handleDbError(res, err, "Failed to fetch products");
