@@ -312,7 +312,7 @@ app.get("/report", (req, res) => {
       const col = {
         code: 50,
         name: 130,
-        category: 300,   // ✅ moved right to avoid overlap
+        category: 300,
         unit: 390,
         qty: 450,
         price: 500
@@ -334,6 +334,14 @@ app.get("/report", (req, res) => {
         doc.moveDown(0.6);
       };
 
+      // ✅ NEW: PAGE BREAK HANDLER
+      const checkPageBreak = (neededSpace = 40) => {
+        if (doc.y + neededSpace > doc.page.height - 50) {
+          doc.addPage();
+          drawHeader(); // redraw table header
+        }
+      };
+
       drawHeader();
 
       let currentCategory = "";
@@ -341,9 +349,17 @@ app.get("/report", (req, res) => {
       let grandTotal = 0;
 
       rows.forEach((p) => {
+
+        // ✅ FIX: prevent row splitting
+        checkPageBreak(40);
+
         const qty = safeNumber(p.quantity);
 
         if (p.category !== currentCategory) {
+
+          // ✅ FIX: prevent category heading breaking badly
+          checkPageBreak(60);
+
           if (currentCategory !== "") {
             doc.moveDown(0.3);
             doc.font("Helvetica-Bold").text(`Category Total (${currentCategory}): ${categoryTotal}`);
