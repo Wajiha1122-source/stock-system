@@ -241,6 +241,15 @@ app.put("/products/:id", async (req, res) => {
   }
 
   try {
+
+    // ✅ GET OLD PRODUCT DATA
+    const oldProductResult = await query(
+      "SELECT * FROM products WHERE id=$1",
+      [req.params.id]
+    );
+
+    const oldProduct = oldProductResult.rows[0];
+
     const existing = await query(
       "SELECT * FROM products WHERE code=$1 AND id!=$2",
       [code, req.params.id]
@@ -251,6 +260,32 @@ app.put("/products/:id", async (req, res) => {
         success: false,
         message: "Another product already uses this code"
       });
+    }
+
+    // ✅ SAVE HISTORY BEFORE UPDATE
+    if (oldProduct) {
+      await query(
+        `INSERT INTO product_history
+        (
+          product_id,
+          product_code,
+          product_name,
+          old_quantity,
+          new_quantity,
+          old_price,
+          new_price
+        )
+        VALUES ($1,$2,$3,$4,$5,$6,$7)`,
+        [
+          oldProduct.id,
+          oldProduct.code,
+          oldProduct.name,
+          oldProduct.quantity,
+          quantity,
+          oldProduct.price,
+          price
+        ]
+      );
     }
 
     await query(
@@ -270,7 +305,6 @@ app.put("/products/:id", async (req, res) => {
     return handleDbError(res, err, "Update failed");
   }
 });
-
 // =====================================================
 // DELETE (MIGRATED SAFE)
 // =====================================================
@@ -286,7 +320,20 @@ app.delete("/products/:id", async (req, res) => {
     return handleDbError(res, err, "Delete failed");
   }
 });
+// =====================================================
+// PRODUCT HISTORY (NEW)
+// =====================================================
+app.get("/product-history", async (req, res) => {
+  try {
+    const result = await query(
+      `SELECT * FROM product_history ORDER BY edited_at DESC`
+    );
 
+    res.json(result.rows);
+  } catch (err) {
+    return handleDbError(res, err, "Failed to fetch history");
+  }
+});
 // =====================================================
 // REPORT (PDF - FIXED)
 // =====================================================
